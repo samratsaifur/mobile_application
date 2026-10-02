@@ -24,6 +24,25 @@ body {
   background: #eeeeee;
   overflow: hidden;
 }
+.back {
+  text-align: left;
+}
+
+#btn99 {
+  padding: 0.5em;
+  border-radius: 0.3em;
+  color: whitesmoke;
+  font-size: 1.5em;
+  background: rgb(253, 4, 79);
+  cursor: pointer;
+}
+
+#btn99:hover {
+  background: linear-gradient(
+    rgba(255, 0, 0, 0.7) 0%,
+    rgba(0, 0, 255, 0.7) 100%
+  );
+}
 /*******************************************************/
 /* ヘッダー                                             */
 /*******************************************************/
