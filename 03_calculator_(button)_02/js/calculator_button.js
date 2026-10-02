@@ -1,10 +1,8 @@
 "use strict";
-
 let prev_value = null;
 let w_result = "";
 let w_total = "";
 let currentAudio = null;
-
 let click_sound = new Audio("./sound/click.mp3");
 
 let keyboard_array = [
@@ -35,38 +33,25 @@ const calcLog = document.getElementById("calcLog");
 const result = document.getElementById("result");
 const buttons = document.getElementById("buttons");
 
-// Button event
 buttons.addEventListener("click", (event) => {
-  // Ignore clicks that are not buttons
   if (event.target.tagName !== "BUTTON") return;
 
-  // Call calculator function
   calculate(event.target.value);
 });
 
-// Keyboard event
 document.addEventListener("keydown", (event) => {
-  // Stop browser default action for Enter
-  if (event.key === "Enter") {
-    event.preventDefault();
-  }
+  if (event.key === "Enter") event.preventDefault();
 
-  // If pressed key exists in keyboard_array
-  if (keyboard_array.includes(event.key)) {
-    calculate(event.key);
-  }
+  if (keyboard_array.includes(event.key)) calculate(event.key);
 });
 
-// Calculator function
 function calculate(event_value) {
-  // Play click sound
   soundControl(click_sound);
 
   console.log(
-    `prev_value: ${prev_value} w_result: ${w_result} w_total: ${w_total} calcLog.textContent: ${calcLog.textContent} result: ${result.textContent}`,
+    `prev_value: ${prev_value} w_result: ${w_result} w_total: ${w_total} calcLog: ${calcLog.textContent} result: ${result.textContent}`,
   );
 
-  // Clear calculator
   if (
     event_value === "C" ||
     event_value === "c" ||
@@ -76,77 +61,46 @@ function calculate(event_value) {
   ) {
     calcLog.textContent = "";
     result.textContent = "";
-
     w_result = "";
     w_total = "";
-    prev_value = null;
-
-    return;
-  }
-
-  // When "=" or Enter is pressed
-  if (event_value === "=" || event_value === "Enter") {
-    // Display calculation
-    calcLog.textContent = w_result;
-
+  } else if (event_value === "=" || event_value === "Enter") {
     try {
-      // Calculate result
-      w_total = eval(w_result);
+      calcLog.textContent = w_result;
 
-      // Display result
+      w_total = eval(w_result);
       result.textContent = w_total.toLocaleString("ja-JP");
     } catch {
       result.textContent = "Error";
-      w_total = "";
+    }
+  } else {
+    if (prev_value === "=" || prev_value === "Enter") {
+      calcLog.textContent = w_total;
+      w_result = w_total;
     }
 
-    // Save previous key
-    prev_value = event_value;
-
-    return;
+    w_result += event_value;
+    result.textContent = w_result.toLocaleString("ja-JP");
+    calcLog.textContent += event_value;
   }
 
-  // If previous key was "=" or Enter,
-  // start a new calculation
-  if (prev_value === "=" || prev_value === "Enter") {
-    w_result = "";
-    w_total = "";
-
-    calcLog.textContent = "";
-  }
-
-  // Add pressed number/operator
-  w_result += event_value;
-
-  // Display calculation
-  result.textContent = w_result;
-
-  // Add to calculation log
-  calcLog.textContent += event_value;
-
-  // Save previous key
   prev_value = event_value;
 
   console.log(
-    `prev_value: ${prev_value} w_result: ${w_result} w_total: ${w_total} calcLog.textContent: ${calcLog.textContent} result: ${result.textContent}`,
+    `prev_value: ${prev_value} w_result: ${w_result} w_total: ${w_total} calcLog: ${calcLog.textContent} result: ${result.textContent}`,
   );
 }
 
-// Sound control
 function soundControl(w_sound) {
-  // Stop previous sound if playing
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
   }
 
-  // Play sound
   w_sound.play().catch((error) => {
     if (error.name !== "AbortError") {
-      console.error("Error:", error);
+      console.error("再生エラー:", error);
     }
   });
 
-  // Save current audio
   currentAudio = w_sound;
 }
